@@ -19,7 +19,9 @@ class BTree():
     self.root = node
     self.root.deep = 1
     self.max_deep = 1
-  
+    self.node_list = [self.root]
+    self.key_list = [self.root.data]
+
   def __shallow_subtree(self,node):
     node.deep-=1
     if(node.left!=None):
@@ -27,7 +29,7 @@ class BTree():
     if(node.right!=None):
       self.__shallow_subtree(node.right)
 
-  def __lrotate(self,node):
+  def lrotate(self,node):
     if(node==None):return
     nr = node.right
     if(nr==None):return
@@ -69,7 +71,7 @@ class BTree():
     nd_h = node.deep + max(node.l_max_height,node.r_max_height)
     if(nd_h > self.max_deep):self.max_deep=nd_h
 
-  def __rrotate(self,node):
+  def rrotate(self,node):
     if(node==None):return
     nl = node.left
     if(nl==None):return
@@ -111,22 +113,53 @@ class BTree():
     nd_h = node.deep + max(node.l_max_height,node.r_max_height)
     if(nd_h > self.max_deep):self.max_deep=nd_h
 
-  def linsert(self,key):
+  def linsert(self,node):
+    if(node==None):return
+    key = node.data
+    if(key in self.key_list):return
     inp = self.root
     lrch = None
     while(inp!=None):
       if(key<inp.data):
         if(inp.left==None):
           lrch = 'L'
+          inp.left=node
+          inp.l_max_height=1
           break
         inp=inp.left
       else:
         if(inp.right==None):
           lrch = 'R'
+          inp.right=node
+          inp.r_max_height=1
           break
         inp=inp.right
-    node = Node(key,inp.deep+1)
+    node.deep = inp.deep+1
     node.parent = inp
     node.lr_child = lrch
+    if(node.deep > self.max_deep):self.max_deep=node.deep
+    self.key_list+=[key]
+    self.node_list+=[node]
 
-  
+  def delete_node(self,key):
+    try:
+      ind = self.key_list.index(key)
+      node = self.node_list[ind]
+
+    except:
+      return
+
+
+  def print_helper(self, node, indent, nodelamb=None):
+    if(node==None):return
+    sys.stdout.write(indent)
+    if(node.lr_child):sys.stdout.write(node.lr_child+"---")
+
+    if(nodelamb):sys.stdout.write(nodelamb(node)+'\n')
+    else:sys.stdout.write('({})\n'.format(node.data))
+    indent+='|   '
+    if(node.left):self.print_helper(node.left,indent,nodelamb)
+    if(node.right):self.print_helper(node.right,indent,nodelamb)
+
+  def print_tree(self,nodelamb=None):
+    self.print_helper(self.root,'',nodelamb)

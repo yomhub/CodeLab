@@ -11,12 +11,24 @@ class RBNode(Node):
 class RBTree(BTree):
   def __init__(self,node):
     BTree.__init__(self,node)
+    self.prlmb = lambda node: '({},{})'.format(node.data,node.color)
 
   def fix_insert(self,node):
     np = node.parent
-    if(np.coler==1):
-
-  
+    if(np.coler=='R'):
+      """"""
+  def print_tree(self):
+    self.print_helper(self.root,'',self.prlmb)
+    
 if __name__ == "__main__":
   tr = RBTree(RBNode(50))
-  print("end\n")
+  tr.linsert(RBNode(60))
+  tr.linsert(RBNode(40))
+  tr.linsert(RBNode(47))
+  tr.linsert(RBNode(30))
+  tr.linsert(RBNode(33))
+  tr.linsert(RBNode(73))
+  tr.linsert(RBNode(20))
+  tr.linsert(RBNode(120))
+  tr.print_tree()
+  print("end{}\n".format(tr.max_deep))

@@ -13,6 +13,17 @@ class Node():
     self.l_max_height = 0 # left sub-tree height
     self.r_max_height = 0 # right sub-tree height
 
+  def __iter__(self):
+    if(self.left != None):
+      yield from self.left.__iter__()
+    yield self.data
+    if(self.right != None):
+      yield from self.right.__iter__()
+
+  def __eq__(self, other):
+    if(other==None): return False
+    return self.data==other.data
+
 class BTree():
   def __init__(self,node):
     assert(node!=None)
@@ -22,22 +33,50 @@ class BTree():
     self.node_list = [self.root]
     self.key_list = [self.root.data]
 
-  def __shallow_subtree(self,node):
+  def __shallower(self,node):
     node.deep-=1
     if(node.left!=None):
-      self.__shallow_subtree(node.left)
+      self.__shallower(node.left)
     if(node.right!=None):
-      self.__shallow_subtree(node.right)
+      self.__shallower(node.right)
 
-  def lrotate(self,node):
-    if(node==None):return
+  def __deeper(self,node):
+    node.deep+=1
+    if(node.left!=None):
+      self.__deeper(node.left)
+    if(node.right!=None):
+      self.__deeper(node.right)
+
+  def __biggest(self,node):
+    inp = node
+    while(inp.right!=None):inp = inp.right
+    return inp
+
+  def __smallest(self,node):
+    inp = node
+    while(inp.left!=None):inp = inp.left
+    return inp
+
+  def __update_height(self,node):
+    inp = node
+    while(inp.parent!=None):
+      if(inp.lr_child=='L'):inp.parent.l_max_height=max(inp.l_max_height,inp.r_max_height)+1
+      else:inp.parent.r_max_height=max(inp.l_max_height,inp.r_max_height)+1
+      inp = inp.parent
+    
+  def lrotate(self,key):
+    try:
+      inc = self.key_list.index(key)
+    except:
+      return
+    node=self.node_list[inc]
     nr = node.right
     if(nr==None):return
     nrl = node.right.left
-    node.deep += 1
     nf = node.parent
 
     # Process node->right->left
+    node.deep += 1
     if(nrl!=None):
       node.r_max_height = max(nrl.l_max_height,nrl.r_max_height)+1
       nrl.parent = node
@@ -65,14 +104,18 @@ class BTree():
 
     # Update deep
     if(nr.right!=None):
-      self.__shallow_subtree(nr.right)
+      self.__shallower(nr.right)
     if(node.left!=None):
-      self.__shallow_subtree(node.left)
+      self.__deeper(node.left)
     nd_h = node.deep + max(node.l_max_height,node.r_max_height)
     if(nd_h > self.max_deep):self.max_deep=nd_h
 
-  def rrotate(self,node):
-    if(node==None):return
+  def rrotate(self,key):
+    try:
+      inc = self.key_list.index(key)
+    except:
+      return
+    node=self.node_list[inc]
     nl = node.left
     if(nl==None):return
     nlr = node.left.right
@@ -107,9 +150,9 @@ class BTree():
 
     # Update deep
     if(nl.left!=None):
-      self.__shallow_subtree(nl.left)
+      self.__shallower(nl.left)
     if(node.right!=None):
-      self.__shallow_subtree(node.right)
+      self.__shallower(node.right)
     nd_h = node.deep + max(node.l_max_height,node.r_max_height)
     if(nd_h > self.max_deep):self.max_deep=nd_h
 
@@ -117,38 +160,109 @@ class BTree():
     if(node==None):return
     key = node.data
     if(key in self.key_list):return
+    if(self.root==None):
+      self.key_list+=[key]
+      self.node_list+=[node]
+      self.root = node
+      return
     inp = self.root
-    lrch = None
+
     while(inp!=None):
       if(key<inp.data):
         if(inp.left==None):
-          lrch = 'L'
+          node.lr_child = 'L'
           inp.left=node
-          inp.l_max_height=1
           break
         inp=inp.left
       else:
         if(inp.right==None):
-          lrch = 'R'
+          node.lr_child = 'R'
           inp.right=node
-          inp.r_max_height=1
           break
         inp=inp.right
     node.deep = inp.deep+1
     node.parent = inp
-    node.lr_child = lrch
     if(node.deep > self.max_deep):self.max_deep=node.deep
     self.key_list+=[key]
     self.node_list+=[node]
+    inp = node
+    while(inp.parent!=None):
+      if(inp.lr_child=='L'):inp.parent.l_max_height=max(inp.l_max_height,inp.r_max_height)+1
+      else:inp.parent.r_max_height=max(inp.l_max_height,inp.r_max_height)+1
+      inp=inp.parent
 
-  def delete_node(self,key):
+  def remove(self,key):
     try:
       ind = self.key_list.index(key)
-      node = self.node_list[ind]
-
     except:
       return
+    node = self.node_list[ind]
 
+    # case 1: have LR child
+    if(node.left!=None and node.right!=None):
+      tar = self.__biggest(node.left)
+      if(tar.left!=None):
+        tar.left.lr_child = tar.lr_child
+        tar.left.parent = tar.parent
+        if(tar.lr_child=='L'):
+          tar.parent.left = tar.left
+          tar.parent.l_max_height = max(tar.left.l_max_height,tar.left.r_max_height)+1
+        else:
+          tar.parent.right = tar.left
+          tar.parent.r_max_height = max(tar.left.l_max_height,tar.left.r_max_height)+1
+        self.__shallower(tar.left)
+      if(node.left==tar):
+        node.left = None
+        node.l_max_height = 0
+      else: node.l_max_height = max(node.left.l_max_height,node.left.r_max_height)+1
+      node.data = tar.data
+    # case 2: only have L child
+    elif(node.left!=None):
+      if(node.parent!=None):
+        node.left.lr_child = node.lr_child
+        node.left.parent = node.parent
+        if(node.lr_child=='L'):
+          node.parent.left = node.left
+          node.parent.l_max_height = max(node.left.l_max_height,node.left.r_max_height)+1
+        else:
+          node.parent.right = node.left
+          node.parent.r_max_height = max(node.left.l_max_height,node.left.r_max_height)+1
+      else:
+        node.left.parent = None
+        node.left.lr_child = None
+        self.root = node.left
+      self.__shallower(node.left)
+    # case 3: only have R child
+    elif(node.right!=None):
+      if(node.parent!=None):
+        node.right.lr_child = node.lr_child
+        node.right.parent = node.parent
+        if(node.lr_child=='L'):
+          node.parent.left = node.right
+          node.parent.l_max_height = max(node.right.l_max_height,node.right.r_max_height)+1
+        else:
+          node.parent.right = node.right
+          node.parent.r_max_height = max(node.right.l_max_height,node.right.r_max_height)+1
+      else:
+        node.right.parent = None
+        node.right.lr_child = None
+        self.root = node.right
+      self.__shallower(node.right)
+    # case 4:leaf node
+    else:
+      if(node.parent==None): # root
+        self.root=None
+      else:
+        if(node.lr_child=='L'):
+          node.parent.left = None
+          node.parent.l_max_height = 0
+        else:
+          node.parent.right = None
+          node.parent.r_max_height = 0
+    if(node.parent!=None):self.__update_height(node.parent)
+
+    del(self.key_list[ind])
+    del(self.node_list[ind])
 
   def print_helper(self, node, indent, nodelamb=None):
     if(node==None):return

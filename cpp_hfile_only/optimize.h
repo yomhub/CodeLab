@@ -7,6 +7,8 @@
 
 /*
 	For 01question | DynamicPlanning
+  Args:
+    
 */
 template <typename DataType, typename TargetType>
 std::vector<DataType> SingleTargetApproximate(std::vector<DataType> datas, TargetType target) {

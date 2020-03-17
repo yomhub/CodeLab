@@ -11,7 +11,8 @@ class RBNode(Node):
 class RBTree(BTree):
   def __init__(self,node):
     BTree.__init__(self,node)
-    self.prlmb = lambda node: '({},{},{},{},{})'.format(node.data,node.lr_child,node.deep,node.l_max_height,node.r_max_height)
+    self.prlmb = lambda node: '({},{},{},{},{})'.format(
+      node.data,node.lr_child,node.deep,node.l_max_height,node.r_max_height)
 
   def fix_insert(self,node):
     np = node.parent

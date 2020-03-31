@@ -93,7 +93,7 @@ std::vector<DataType> SingleTargetApproximate(std::vector<DataType> datas, Targe
 
 
 /*
-	For 01question | DynamicPlanning
+	For 01question | Dynamic Planning
 	PS: This function is VALUATION, NOT exact solution
 */
 template <typename DataType, typename TargetType>

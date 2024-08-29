@@ -1,9 +1,35 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" version="24.7.8">
   <diagram name="Page-1" id="rxeA2cp27CU7HGcO5_Ql">
-    <mxGraphModel>
+    <mxGraphModel dx="691" dy="366" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-6" value="Broker 1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="400" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-7" value="Broker 2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="410" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-8" value="Broker 3" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="420" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-9" value="" style="swimlane;startSize=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="380" width="140" height="100" as="geometry">
+            <mxRectangle x="220" y="380" width="50" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-3" value="RT source 1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="SNz-YkqhvGtVgAk1sMpG-9">
+          <mxGeometry x="20" y="30" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-4" value="RT source 2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="SNz-YkqhvGtVgAk1sMpG-9">
+          <mxGeometry x="30" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-5" value="RT source 3" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="SNz-YkqhvGtVgAk1sMpG-9">
+          <mxGeometry x="40" y="50" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SNz-YkqhvGtVgAk1sMpG-10" value="Time board" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="SNz-YkqhvGtVgAk1sMpG-9">
+          <mxGeometry x="30" width="80" height="30" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
